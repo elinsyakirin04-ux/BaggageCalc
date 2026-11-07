@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -26,8 +25,8 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Add your actual repository URL here after creating it.
-    private static final String APP_URL = "";
+    private static final String APP_URL =
+            "https://github.com/elinsyakirin04-ux/BaggageCalc";
 
     private final int navy = Color.rgb(19, 36, 62);
     private final int blue = Color.rgb(25, 103, 210);
@@ -35,14 +34,12 @@ public class MainActivity extends AppCompatActivity {
     private final int pale = Color.rgb(239, 244, 250);
 
     private ScrollView scroll;
-    private LinearLayout content;
-    private LinearLayout resultCard;
-
+    private LinearLayout content, resultCard;
     private EditText etWeight, etRate;
     private Button economyButton, businessButton;
     private TextView allowanceText;
-    private TextView excessText, chargeText, taxText, totalText;
-    private TextView resultNotice;
+    private TextView excessText, chargeText, taxText;
+    private TextView totalText, resultNotice;
 
     private boolean business = false;
     private ValueAnimator amountAnimator;
@@ -50,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         WindowCompat.enableEdgeToEdge(getWindow());
 
         if (getSupportActionBar() != null) {
@@ -64,29 +60,21 @@ public class MainActivity extends AppCompatActivity {
                     WindowInsetsCompat.Type.systemBars()
                             | WindowInsetsCompat.Type.ime()
             );
-
             view.setPadding(
                     bars.left, bars.top, bars.right, bars.bottom
             );
-
             return insets;
         });
 
-        WindowCompat.getInsetsController(
-                getWindow(), scroll
-        ).setAppearanceLightStatusBars(true);
-
-        WindowCompat.getInsetsController(
-                getWindow(), scroll
-        ).setAppearanceLightNavigationBars(true);
+        WindowCompat.getInsetsController(getWindow(), scroll)
+                .setAppearanceLightStatusBars(true);
+        WindowCompat.getInsetsController(getWindow(), scroll)
+                .setAppearanceLightNavigationBars(true);
 
         content.setAlpha(0f);
         content.setTranslationY(dp(20));
-        content.animate()
-                .alpha(1f)
-                .translationY(0f)
-                .setDuration(450)
-                .start();
+        content.animate().alpha(1f).translationY(0f)
+                .setDuration(450).start();
     }
 
     private void buildScreen() {
@@ -95,24 +83,18 @@ public class MainActivity extends AppCompatActivity {
         scroll.setBackgroundColor(pale);
         scroll.setClipToPadding(true);
 
-        content = new LinearLayout(this);
-        content.setOrientation(LinearLayout.VERTICAL);
+        content = column();
         content.setPadding(dp(20), dp(12), dp(20), dp(28));
-
-        scroll.addView(content, new ScrollView.LayoutParams(
-                -1, -2
-        ));
-
+        scroll.addView(content, new ScrollView.LayoutParams(-1, -2));
         setContentView(scroll);
 
-        // Toolbar
         LinearLayout toolbar = new LinearLayout(this);
         toolbar.setGravity(Gravity.CENTER_VERTICAL);
 
-        TextView brand = text("BaggageCalc", 21, navy, true);
-        toolbar.addView(brand, new LinearLayout.LayoutParams(
-                0, -2, 1
-        ));
+        toolbar.addView(
+                text("BaggageCalc", 21, navy, true),
+                new LinearLayout.LayoutParams(0, -2, 1)
+        );
 
         Button about = button("About", false);
         toolbar.addView(about);
@@ -126,9 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
         content.addView(toolbar);
 
-        // Hero card
         LinearLayout hero = column();
-
         GradientDrawable gradient = new GradientDrawable(
                 GradientDrawable.Orientation.TL_BR,
                 new int[]{
@@ -137,30 +117,27 @@ public class MainActivity extends AppCompatActivity {
                         Color.rgb(22, 125, 173)
                 }
         );
-
         gradient.setCornerRadius(dp(26));
         hero.setBackground(gradient);
         hero.setPadding(dp(24), dp(24), dp(24), dp(24));
-
         add(content, hero, 18);
 
-        hero.addView(text("✈  TRAVEL SMARTER", 13,
-                Color.rgb(174, 222, 255), true));
-
-        add(hero, text("Pack your bags.\nKnow your fees.", 30,
-                Color.WHITE, true), 16);
-
+        hero.addView(text(
+                "✈  TRAVEL SMARTER", 13,
+                Color.rgb(174, 222, 255), true
+        ));
+        add(hero, text(
+                "Pack your bags.\nKnow your fees.",
+                30, Color.WHITE, true
+        ), 16);
         add(hero, text(
                 "A little planning. A smoother journey.",
                 15, Color.rgb(211, 229, 248), false
         ), 12);
 
-        // Input card
         LinearLayout form = card();
         add(content, form, 20);
-
         form.addView(text("Your flight details", 21, navy, true));
-
         add(form, text(
                 "Enter your checked baggage weight and rate.",
                 14, muted, false
@@ -179,18 +156,17 @@ public class MainActivity extends AppCompatActivity {
         add(form, text("TICKET CLASS", 12, muted, true), 20);
 
         LinearLayout classes = new LinearLayout(this);
-
         economyButton = button("Economy\n20 kg", false);
         businessButton = button("Business\n40 kg", false);
 
         LinearLayout.LayoutParams left =
                 new LinearLayout.LayoutParams(0, dp(76), 1);
         left.setMarginEnd(dp(8));
-
         classes.addView(economyButton, left);
-        classes.addView(businessButton,
-                new LinearLayout.LayoutParams(0, dp(76), 1));
-
+        classes.addView(
+                businessButton,
+                new LinearLayout.LayoutParams(0, dp(76), 1)
+        );
         add(form, classes, 10);
 
         economyButton.setOnClickListener(view -> selectClass(false));
@@ -216,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
 
         Button calculate = button("Calculate my fee  →", true);
         add(form, calculate, 22);
-
         calculate.setOnClickListener(view -> {
             view.animate().cancel();
             view.setScaleX(0.97f);
@@ -230,31 +205,26 @@ public class MainActivity extends AppCompatActivity {
         add(form, reset, 8);
         reset.setOnClickListener(view -> resetForm());
 
-        // Result card
         resultCard = card();
         add(content, resultCard, 20);
-
         resultCard.addView(text("Your fee summary", 21, navy, true));
 
         excessText = text("", 16, navy, false);
         chargeText = text("", 16, navy, false);
         taxText = text("", 14, muted, false);
-
         add(resultCard, excessText, 20);
         add(resultCard, chargeText, 14);
         add(resultCard, taxText, 14);
 
         View divider = new View(this);
         divider.setBackgroundColor(Color.rgb(226, 232, 240));
-
-        LinearLayout.LayoutParams dividerParams =
+        LinearLayout.LayoutParams lineParams =
                 new LinearLayout.LayoutParams(-1, dp(1));
-        dividerParams.topMargin = dp(20);
-        dividerParams.bottomMargin = dp(20);
-        resultCard.addView(divider, dividerParams);
+        lineParams.topMargin = dp(20);
+        lineParams.bottomMargin = dp(20);
+        resultCard.addView(divider, lineParams);
 
         resultCard.addView(text("TOTAL PAYABLE", 12, muted, true));
-
         totalText = text("", 34, blue, true);
         add(resultCard, totalText, 6);
 
@@ -283,7 +253,6 @@ public class MainActivity extends AppCompatActivity {
     private void updateClassAppearance() {
         styleClass(economyButton, !business);
         styleClass(businessButton, business);
-
         economyButton.setSelected(!business);
         businessButton.setSelected(business);
 
@@ -294,9 +263,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void styleClass(Button button, boolean selected) {
         button.setBackgroundTintList(null);
-        button.setBackground(background(
-                selected ? blue : pale, 16
-        ));
+        button.setBackground(background(selected ? blue : pale, 16));
         button.setTextColor(selected ? Color.WHITE : navy);
     }
 
@@ -311,8 +278,7 @@ public class MainActivity extends AppCompatActivity {
         Double rate = readNumber(etRate, true);
         if (rate == null) return;
 
-        double allowance = business ? 40 : 20;
-        double excess = Math.max(0, weight - allowance);
+        double excess = Math.max(0, weight - (business ? 40 : 20));
         double charge = excess * rate;
         double tax = charge * 0.08;
         double total = charge + tax;
@@ -326,11 +292,9 @@ public class MainActivity extends AppCompatActivity {
         excessText.setText(String.format(
                 Locale.US, "Excess weight: %.2f kg", excess
         ));
-
         chargeText.setText(String.format(
                 Locale.US, "Excess baggage charge: RM %.2f", charge
         ));
-
         taxText.setText(String.format(
                 Locale.US, "Service tax (8%%): RM %.2f", tax
         ));
@@ -338,11 +302,9 @@ public class MainActivity extends AppCompatActivity {
         resultNotice.setText(excess == 0
                 ? "Within your allowance. No excess baggage fee!"
                 : "Includes 8% service tax.");
-
         resultNotice.setTextColor(excess == 0
                 ? Color.rgb(21, 128, 90) : muted);
 
-        // Count the total up to its final amount.
         amountAnimator = ValueAnimator.ofFloat(0f, 1f);
         amountAnimator.setDuration(650);
         amountAnimator.addUpdateListener(animation -> {
@@ -353,15 +315,11 @@ public class MainActivity extends AppCompatActivity {
         });
         amountAnimator.start();
 
-        // Reveal the result with a short slide and fade.
         resultCard.animate().cancel();
         resultCard.setAlpha(0.3f);
         resultCard.setTranslationY(dp(24));
-        resultCard.animate()
-                .alpha(1f)
-                .translationY(0f)
-                .setDuration(400)
-                .start();
+        resultCard.animate().alpha(1f).translationY(0f)
+                .setDuration(400).start();
 
         View focused = getCurrentFocus();
         if (focused != null) {
@@ -383,9 +341,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Double readNumber(EditText field, boolean isRate) {
-        String input = field.getText().toString().trim();
+        String valueText = field.getText().toString().trim();
 
-        if (input.isEmpty()) {
+        if (valueText.isEmpty()) {
             field.setError(isRate
                     ? "Please enter the rate per kg."
                     : "Please enter the baggage weight.");
@@ -394,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            double value = Double.parseDouble(input);
+            double value = Double.parseDouble(valueText);
 
             if (Double.isNaN(value) || Double.isInfinite(value)) {
                 field.setError("Enter a valid number.");
@@ -414,9 +372,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clearResults() {
-        if (amountAnimator != null) {
-            amountAnimator.cancel();
-        }
+        if (amountAnimator != null) amountAnimator.cancel();
 
         excessText.setText("Excess weight: —");
         chargeText.setText("Excess baggage charge: —");
@@ -431,24 +387,13 @@ public class MainActivity extends AppCompatActivity {
         etRate.setText("");
         etWeight.setError(null);
         etRate.setError(null);
-
         business = false;
         updateClassAppearance();
         clearResults();
-
         scroll.smoothScrollTo(0, 0);
     }
 
     private void shareApplication() {
-        if (APP_URL.isEmpty()) {
-            Toast.makeText(
-                    this,
-                    "Add your GitHub repository URL before sharing.",
-                    Toast.LENGTH_LONG
-            ).show();
-            return;
-        }
-
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.putExtra(
@@ -459,7 +404,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(share, "Share BaggageCalc"));
     }
 
-    // Design helpers
     private LinearLayout column() {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -480,11 +424,7 @@ public class MainActivity extends AppCompatActivity {
         view.setText(value);
         view.setTextSize(size);
         view.setTextColor(color);
-
-        if (bold) {
-            view.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        }
-
+        if (bold) view.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         return view;
     }
 
@@ -517,9 +457,7 @@ public class MainActivity extends AppCompatActivity {
         button.setMinWidth(0);
         button.setPadding(dp(14), dp(8), dp(14), dp(8));
         button.setBackgroundTintList(null);
-        button.setBackground(background(
-                primary ? blue : pale, 16
-        ));
+        button.setBackground(background(primary ? blue : pale, 16));
         return button;
     }
 
@@ -530,10 +468,10 @@ public class MainActivity extends AppCompatActivity {
         return drawable;
     }
 
-    private void add(LinearLayout parent, View child, int topMargin) {
+    private void add(LinearLayout parent, View child, int margin) {
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(-1, -2);
-        params.topMargin = dp(topMargin);
+        params.topMargin = dp(margin);
         parent.addView(child, params);
     }
 
@@ -545,9 +483,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (amountAnimator != null) {
-            amountAnimator.cancel();
-        }
+        if (amountAnimator != null) amountAnimator.cancel();
         super.onDestroy();
     }
 }
